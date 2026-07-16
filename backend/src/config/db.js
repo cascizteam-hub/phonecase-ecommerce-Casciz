@@ -15,8 +15,24 @@ const connectDB = async () => {
     console.log('MONGO_URI not set — using in-memory MongoDB for development');
   }
 
-  await mongoose.connect(uri, { family: 4 });
-  console.log(`MongoDB connected: ${mongoose.connection.host}`);
+  // Atlas shared (M0) clusters occasionally reset the TLS handshake on the
+  // first connection attempt (ERR_SSL_TLSV1_ALERT_INTERNAL_ERROR). This is
+  // transient — retry with backoff rather than crashing the whole service.
+  const maxAttempts = 5;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      await mongoose.connect(uri, { family: 4 });
+      console.log(`MongoDB connected: ${mongoose.connection.host}`);
+      return;
+    } catch (err) {
+      if (attempt === maxAttempts) throw err;
+      const delayMs = attempt * 3000;
+      console.warn(
+        `MongoDB connection attempt ${attempt}/${maxAttempts} failed (${err.message}). Retrying in ${delayMs}ms…`
+      );
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
+  }
 };
 
 export const disconnectDB = async () => {
