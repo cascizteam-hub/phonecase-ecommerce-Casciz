@@ -15,7 +15,7 @@ const connectDB = async () => {
     console.log('MONGO_URI not set — using in-memory MongoDB for development');
   }
 
-  await mongoose.connect(uri);
+  await mongoose.connect(uri, { family: 4 });
   console.log(`MongoDB connected: ${mongoose.connection.host}`);
 };
 
