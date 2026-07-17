@@ -49,12 +49,17 @@ export default function ProductCard({ product }) {
     <Link to={`/product/${product.slug}`} className="product-card reveal">
       {hasDiscount && <span className="product-badge sale">Sale</span>}
       <div className="product-image">
-        <div
-          className="product-image-bg"
-          style={{
-            background: image ? `url(${image}) center/cover` : 'linear-gradient(145deg, #e8f5e9, #c8e6c9)',
-          }}
-        />
+        {image ? (
+          <img
+            className="product-image-bg"
+            src={image}
+            alt={product.name}
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <div className="product-image-bg" style={{ background: 'linear-gradient(145deg, #e8f5e9, #c8e6c9)' }} />
+        )}
         <button className="product-quick-add" onClick={handleQuickAdd}>+ Quick Add</button>
       </div>
       <div className="product-info">

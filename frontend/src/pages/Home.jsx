@@ -29,14 +29,26 @@ export default function Home() {
 
   useScrollReveal([categories, featured]);
 
+  // Featured product's first image if one exists, else the first available
+  // product's first image (featured already falls back to "all products"
+  // above when there are no featured ones).
+  const heroProduct = featured[0];
+  const heroProductImage = heroProduct?.images?.[0]?.url;
+
   return (
     <>
       <section className="hero">
-        <div className="hero-bg-shapes">
-          <div className="circle c1"></div>
-          <div className="circle c2"></div>
-          <div className="circle c3"></div>
-        </div>
+        <img
+          className="hero-bg-image"
+          src="/images/hero-bg-1200.jpg"
+          srcSet="/images/hero-bg-800.jpg 800w, /images/hero-bg-1200.jpg 1200w, /images/hero-bg-1920.jpg 1920w"
+          sizes="100vw"
+          alt=""
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+        />
+        <div className="hero-overlay" />
         <div className="hero-content">
           <div className="hero-text">
             <div className="hero-badge">
@@ -59,7 +71,17 @@ export default function Home() {
             <div className="hero-phone">
               <div className="hero-phone-inner">
                 <div className="case-preview">
-                  <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--green-500)" strokeWidth="1.5"><rect x="5" y="2" width="14" height="20" rx="3" /><path d="M12 18h.01" /></svg>
+                  {heroProductImage ? (
+                    <img
+                      src={heroProductImage}
+                      alt={heroProduct.name}
+                      loading="eager"
+                      decoding="async"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'inherit' }}
+                    />
+                  ) : (
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--green-500)" strokeWidth="1.5"><rect x="5" y="2" width="14" height="20" rx="3" /><path d="M12 18h.01" /></svg>
+                  )}
                 </div>
                 <span>Casciz</span>
               </div>
