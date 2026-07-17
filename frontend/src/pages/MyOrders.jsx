@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import { getMyOrdersApi } from '../api/orders';
 import Loader from '../components/Loader';
 
-const statusColors = {
-  pending: 'bg-amber-100 text-amber-700',
-  processing: 'bg-blue-100 text-blue-700',
-  shipped: 'bg-indigo-100 text-indigo-700',
-  delivered: 'bg-green-100 text-green-700',
-  cancelled: 'bg-red-100 text-red-700',
+const statusStyle = {
+  pending: { background: '#fff3cd', color: '#856404' },
+  processing: { background: '#d6ebff', color: '#1a5c9e' },
+  shipped: { background: 'var(--green-100)', color: 'var(--green-700)' },
+  delivered: { background: 'var(--green-500)', color: 'var(--white)' },
+  cancelled: { background: '#fde8e8', color: '#e74c3c' },
 };
 
 export default function MyOrders() {
@@ -18,44 +18,42 @@ export default function MyOrders() {
     getMyOrdersApi().then((data) => setOrders(data.orders));
   }, []);
 
-  if (!orders) return <Loader />;
-
-  if (orders.length === 0) {
-    return (
-      <div className="text-center py-20">
-        <p className="text-gray-500 mb-4">You haven't placed any orders yet.</p>
-        <Link to="/shop" className="text-gray-900 font-medium underline">
-          Start shopping
-        </Link>
-      </div>
-    );
-  }
-
   return (
-    <div>
-      <h1 className="text-xl font-semibold text-gray-900 mb-4">My Orders</h1>
-      <div className="flex flex-col divide-y divide-gray-100">
-        {orders.map((order) => (
-          <Link
-            key={order._id}
-            to={`/orders/${order._id}`}
-            className="flex items-center justify-between py-4 hover:bg-gray-50 px-2 -mx-2 rounded"
-          >
-            <div>
-              <p className="font-medium text-gray-900">Order #{order._id.slice(-8)}</p>
-              <p className="text-sm text-gray-500">
-                {new Date(order.createdAt).toLocaleDateString()} · {order.items.length} item(s)
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className={`text-xs px-2 py-1 rounded-full ${statusColors[order.status]}`}>
-                {order.status}
-              </span>
-              <span className="font-semibold text-gray-900">₹{order.totalPrice}</span>
-            </div>
-          </Link>
-        ))}
+    <>
+      <div className="page-header">
+        <h1>My Orders</h1>
+        <div className="breadcrumb"><Link to="/">Home</Link> <span>/</span> <span>Orders</span></div>
       </div>
-    </div>
+
+      {!orders ? (
+        <Loader />
+      ) : orders.length === 0 ? (
+        <div className="cart-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--green-300)" strokeWidth="1"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 01-8 0" /></svg>
+          <h3>You haven't placed any orders yet</h3>
+          <p>When you do, they'll show up here.</p>
+          <Link to="/shop" className="btn-primary">Start shopping</Link>
+        </div>
+      ) : (
+        <div className="cart-layout" style={{ gridTemplateColumns: '1fr' }}>
+          <div className="cart-items">
+            {orders.map((order) => (
+              <Link key={order._id} to={`/orders/${order._id}`} className="cart-item" style={{ gridTemplateColumns: '1fr auto', textDecoration: 'none' }}>
+                <div className="cart-item-details">
+                  <h4>Order #{order._id.slice(-8)}</h4>
+                  <div className="variant">{new Date(order.createdAt).toLocaleDateString()} · {order.items.length} item(s)</div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <span style={{ ...statusStyle[order.status], fontSize: 12, fontWeight: 600, padding: '4px 12px', borderRadius: 100, textTransform: 'capitalize' }}>
+                    {order.status}
+                  </span>
+                  <span className="item-price">₹{order.totalPrice}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
   );
 }

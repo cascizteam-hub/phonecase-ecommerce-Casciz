@@ -1,52 +1,80 @@
-import { Link } from 'react-router-dom';
-import StarRating from './StarRating';
-import { useWishlist } from '../hooks/useWishlist';
+import { Link, useNavigate } from 'react-router-dom';
+import { useCart } from '../hooks/useCart';
+import { useToast } from '../hooks/useToast';
+
+const COLOR_NAME_MAP = {
+  black: '#1a2e23', white: '#ffffff', clear: '#e8f5e9', transparent: '#e8f5e9',
+  green: '#4aad7e', blue: '#4a90d9', red: '#e74c3c', brown: '#795548',
+  pink: '#e91e8c', purple: '#8e44ad', gold: '#d4af37', silver: '#bdc3c7',
+};
+
+const swatchFor = (color) => COLOR_NAME_MAP[color?.toLowerCase()] || 'var(--green-300)';
 
 export default function ProductCard({ product }) {
-  const { isWishlisted, toggle } = useWishlist();
-  const wishlisted = isWishlisted(product._id);
+  const navigate = useNavigate();
+  const { addItem } = useCart();
+  const { showToast } = useToast();
+
   const price = product.discountPrice ?? product.price;
   const hasDiscount = product.discountPrice && product.discountPrice < product.price;
+  const discountPct = hasDiscount ? Math.round((1 - product.discountPrice / product.price) * 100) : 0;
+  const colors = [...new Set((product.variants || []).map((v) => v.color).filter(Boolean))];
+  const image = product.images?.[0]?.url;
 
-  const handleWishlist = async (e) => {
+  const handleQuickAdd = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    await toggle(product._id);
+    const variant = product.variants?.[0];
+    if (!variant) {
+      navigate(`/product/${product.slug}`);
+      return;
+    }
+    addItem(
+      {
+        productId: product._id,
+        variantId: variant._id,
+        name: product.name,
+        image,
+        model: variant.model,
+        color: variant.color,
+        price: variant.priceOverride ?? price,
+        maxStock: variant.stock,
+      },
+      1
+    );
+    showToast('Added to cart!');
   };
 
   return (
-    <Link
-      to={`/product/${product.slug}`}
-      className="group relative flex flex-col rounded-xl border border-gray-200 bg-white overflow-hidden hover:shadow-lg transition-shadow"
-    >
-      <button
-        onClick={handleWishlist}
-        aria-label="Toggle wishlist"
-        className="absolute top-2 right-2 z-10 h-8 w-8 rounded-full bg-white/90 flex items-center justify-center shadow"
-      >
-        <span className={wishlisted ? 'text-red-500' : 'text-gray-400'}>{wishlisted ? '♥' : '♡'}</span>
-      </button>
-
-      <div className="aspect-square bg-gray-100 flex items-center justify-center overflow-hidden">
-        {product.images?.[0]?.url ? (
-          <img
-            src={product.images[0].url}
-            alt={product.name}
-            className="h-full w-full object-cover group-hover:scale-105 transition-transform"
-          />
-        ) : (
-          <span className="text-gray-300 text-4xl">📱</span>
-        )}
+    <Link to={`/product/${product.slug}`} className="product-card reveal">
+      {hasDiscount && <span className="product-badge sale">Sale</span>}
+      <div className="product-image">
+        <div
+          className="product-image-bg"
+          style={{
+            background: image ? `url(${image}) center/cover` : 'linear-gradient(145deg, #e8f5e9, #c8e6c9)',
+          }}
+        />
+        <button className="product-quick-add" onClick={handleQuickAdd}>+ Quick Add</button>
       </div>
-
-      <div className="p-3 flex flex-col gap-1">
-        <p className="text-xs text-gray-500">{product.brand}</p>
-        <h3 className="font-medium text-gray-900 line-clamp-1">{product.name}</h3>
-        <StarRating rating={product.rating} count={product.numReviews} />
-        <div className="flex items-center gap-2 mt-1">
-          <span className="font-semibold text-gray-900">₹{price}</span>
-          {hasDiscount && <span className="text-sm text-gray-400 line-through">₹{product.price}</span>}
+      <div className="product-info">
+        <h4>{product.name}</h4>
+        <div className="product-price">
+          <span className="current">₹{price}</span>
+          {hasDiscount && (
+            <>
+              <span className="original">₹{product.price}</span>
+              <span className="discount">{discountPct}% OFF</span>
+            </>
+          )}
         </div>
+        {colors.length > 0 && (
+          <div className="product-colors">
+            {colors.map((c) => (
+              <span key={c} className="color-dot" style={{ background: swatchFor(c) }} title={c} />
+            ))}
+          </div>
+        )}
       </div>
     </Link>
   );

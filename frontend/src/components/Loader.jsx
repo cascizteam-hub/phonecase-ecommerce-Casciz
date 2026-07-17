@@ -1,8 +1,18 @@
 export default function Loader({ label = 'Loading…' }) {
   return (
-    <div className="flex items-center justify-center py-16 text-gray-500">
-      <div className="h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-gray-900 mr-3" />
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '64px 0', color: 'var(--text-light)', gap: 12 }}>
+      <div
+        style={{
+          height: 22,
+          width: 22,
+          borderRadius: '50%',
+          border: '3px solid var(--green-100)',
+          borderTopColor: 'var(--green-500)',
+          animation: 'spin 0.8s linear infinite',
+        }}
+      />
       {label}
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }

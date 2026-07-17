@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../hooks/useCart';
 import { useAuth } from '../hooks/useAuth';
 import { createOrderApi } from '../api/orders';
@@ -16,34 +16,47 @@ const loadRazorpayScript = () =>
     document.body.appendChild(script);
   });
 
-const emptyAddress = {
-  fullName: '',
-  phone: '',
-  line1: '',
-  line2: '',
-  city: '',
-  state: '',
-  postalCode: '',
-  country: 'India',
-};
+const PAYMENT_OPTIONS = [
+  { value: 'cod', label: 'Cash on Delivery (COD)' },
+  { value: 'upi', label: 'UPI / Google Pay / PhonePe' },
+  { value: 'card', label: 'Credit / Debit Card' },
+  { value: 'netbanking', label: 'Net Banking' },
+];
 
 export default function Checkout() {
   const { items, subtotal, clearCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [address, setAddress] = useState(emptyAddress);
+  const [form, setForm] = useState({
+    email: user?.email || '',
+    phone: '',
+    firstName: user?.name?.split(' ')[0] || '',
+    lastName: user?.name?.split(' ')[1] || '',
+    address: '',
+    city: '',
+    state: '',
+    pin: '',
+  });
+  const [paymentOption, setPaymentOption] = useState('cod');
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0);
   const [couponMessage, setCouponMessage] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('razorpay');
   const [placing, setPlacing] = useState(false);
   const [error, setError] = useState('');
 
-  const total = Math.max(subtotal - discount, 0);
+  const shipping = subtotal - discount >= 999 ? 0 : 49;
+  const total = Math.max(subtotal - discount + shipping, 0);
 
   if (items.length === 0) {
-    return <p className="text-center py-20 text-gray-500">Your cart is empty.</p>;
+    return (
+      <div className="cart-empty">
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 01-8 0" /></svg>
+        <h3>Your cart is empty</h3>
+        <p>Add some items to your cart before checkout.</p>
+        <Link to="/shop" className="btn-primary">Start Shopping</Link>
+      </div>
+    );
   }
 
   const applyCoupon = async () => {
@@ -61,12 +74,26 @@ export default function Checkout() {
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     setError('');
+    if (Object.values(form).some((v) => !v)) {
+      setError('Please fill in all required fields');
+      return;
+    }
     setPlacing(true);
+
+    const paymentMethod = paymentOption === 'cod' ? 'cod' : 'razorpay';
 
     try {
       const { order } = await createOrderApi({
         items: items.map((i) => ({ productId: i.productId, variantId: i.variantId, quantity: i.quantity })),
-        shippingAddress: address,
+        shippingAddress: {
+          fullName: `${form.firstName} ${form.lastName}`.trim(),
+          phone: form.phone,
+          line1: form.address,
+          city: form.city,
+          state: form.state,
+          postalCode: form.pin,
+          country: 'India',
+        },
         couponCode: couponCode || undefined,
         paymentMethod,
       });
@@ -80,6 +107,7 @@ export default function Checkout() {
       const scriptLoaded = await loadRazorpayScript();
       if (!scriptLoaded) {
         setError('Failed to load payment gateway. Please try again.');
+        setPlacing(false);
         return;
       }
 
@@ -92,7 +120,7 @@ export default function Checkout() {
         order_id: razorpayOrderId,
         name: 'CaseCraft',
         description: `Order ${order._id}`,
-        prefill: { name: user?.name, email: user?.email },
+        prefill: { name: `${form.firstName} ${form.lastName}`, email: form.email, contact: form.phone },
         handler: async (response) => {
           try {
             await verifyRazorpayPaymentApi({
@@ -108,146 +136,110 @@ export default function Checkout() {
           }
         },
         modal: { ondismiss: () => setPlacing(false) },
-        theme: { color: '#111827' },
+        theme: { color: '#4aad7e' },
       });
       rzp.open();
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to place order');
-    } finally {
       setPlacing(false);
     }
   };
 
+  const set = (key) => (e) => setForm({ ...form, [key]: e.target.value });
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[1fr_320px] gap-8">
-      <form onSubmit={handlePlaceOrder} className="flex flex-col gap-4">
-        <h1 className="text-xl font-semibold text-gray-900">Shipping Address</h1>
-        <input
-          required
-          placeholder="Full name"
-          value={address.fullName}
-          onChange={(e) => setAddress({ ...address, fullName: e.target.value })}
-          className="rounded border border-gray-300 px-3 py-2"
-        />
-        <input
-          required
-          placeholder="Phone"
-          value={address.phone}
-          onChange={(e) => setAddress({ ...address, phone: e.target.value })}
-          className="rounded border border-gray-300 px-3 py-2"
-        />
-        <input
-          required
-          placeholder="Address line 1"
-          value={address.line1}
-          onChange={(e) => setAddress({ ...address, line1: e.target.value })}
-          className="rounded border border-gray-300 px-3 py-2"
-        />
-        <input
-          placeholder="Address line 2 (optional)"
-          value={address.line2}
-          onChange={(e) => setAddress({ ...address, line2: e.target.value })}
-          className="rounded border border-gray-300 px-3 py-2"
-        />
-        <div className="grid grid-cols-2 gap-4">
-          <input
-            required
-            placeholder="City"
-            value={address.city}
-            onChange={(e) => setAddress({ ...address, city: e.target.value })}
-            className="rounded border border-gray-300 px-3 py-2"
-          />
-          <input
-            required
-            placeholder="State"
-            value={address.state}
-            onChange={(e) => setAddress({ ...address, state: e.target.value })}
-            className="rounded border border-gray-300 px-3 py-2"
-          />
-        </div>
-        <input
-          required
-          placeholder="Postal code"
-          value={address.postalCode}
-          onChange={(e) => setAddress({ ...address, postalCode: e.target.value })}
-          className="rounded border border-gray-300 px-3 py-2"
-        />
-
-        <h2 className="text-lg font-semibold text-gray-900 mt-4">Payment Method</h2>
-        <div className="flex gap-3">
-          <label className="flex items-center gap-2 text-sm">
-            <input
-              type="radio"
-              checked={paymentMethod === 'razorpay'}
-              onChange={() => setPaymentMethod('razorpay')}
-            />
-            Razorpay (Card/UPI/Netbanking)
-          </label>
-          <label className="flex items-center gap-2 text-sm">
-            <input type="radio" checked={paymentMethod === 'cod'} onChange={() => setPaymentMethod('cod')} />
-            Cash on Delivery
-          </label>
-        </div>
-
-        {error && <p className="text-red-600 text-sm">{error}</p>}
-
-        <button
-          type="submit"
-          disabled={placing}
-          className="bg-gray-900 text-white font-medium py-3 rounded-full disabled:opacity-50 mt-2"
-        >
-          {placing ? 'Processing…' : `Place Order — ₹${total}`}
-        </button>
-      </form>
-
-      <div className="border border-gray-200 rounded-xl p-5 h-fit">
-        <h2 className="font-semibold text-gray-900 mb-4">Order Summary</h2>
-        <div className="flex flex-col gap-2 mb-4 text-sm">
-          {items.map((item) => (
-            <div key={`${item.productId}-${item.variantId}`} className="flex justify-between">
-              <span className="text-gray-600">
-                {item.name} × {item.quantity}
-              </span>
-              <span className="text-gray-900">₹{item.price * item.quantity}</span>
-            </div>
-          ))}
-        </div>
-
-        <div className="flex gap-2 mb-3">
-          <input
-            placeholder="Coupon code"
-            value={couponCode}
-            onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-            className="flex-1 rounded border border-gray-300 px-3 py-1.5 text-sm"
-          />
-          <button
-            type="button"
-            onClick={applyCoupon}
-            disabled={!couponCode}
-            className="text-sm bg-gray-100 px-3 py-1.5 rounded disabled:opacity-40"
-          >
-            Apply
-          </button>
-        </div>
-        {couponMessage && <p className="text-xs text-gray-600 mb-3">{couponMessage}</p>}
-
-        <div className="border-t border-gray-100 pt-3 flex flex-col gap-1 text-sm">
-          <div className="flex justify-between">
-            <span className="text-gray-600">Subtotal</span>
-            <span>₹{subtotal}</span>
-          </div>
-          {discount > 0 && (
-            <div className="flex justify-between text-green-600">
-              <span>Discount</span>
-              <span>-₹{discount}</span>
-            </div>
-          )}
-          <div className="flex justify-between font-semibold text-gray-900 mt-1">
-            <span>Total</span>
-            <span>₹{total}</span>
-          </div>
-        </div>
+    <>
+      <div className="page-header">
+        <h1>Checkout</h1>
+        <div className="breadcrumb"><Link to="/">Home</Link> <span>/</span> <Link to="/cart">Cart</Link> <span>/</span> <span>Checkout</span></div>
       </div>
-    </div>
+
+      <form className="checkout-layout" onSubmit={handlePlaceOrder}>
+        <div className="checkout-main">
+          <div className="checkout-section">
+            <h3>Contact Information</h3>
+            <div className="form-grid">
+              <div className="full">
+                <div className="form-group">
+                  <label>Email Address</label>
+                  <input type="email" value={form.email} onChange={set('email')} placeholder="your@email.com" required />
+                </div>
+              </div>
+              <div className="full">
+                <div className="form-group">
+                  <label>Phone Number</label>
+                  <input type="tel" value={form.phone} onChange={set('phone')} placeholder="+91 98765 43210" required />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="checkout-section">
+            <h3>Shipping Address</h3>
+            <div className="form-grid">
+              <div className="form-group"><label>First Name</label><input value={form.firstName} onChange={set('firstName')} placeholder="John" required /></div>
+              <div className="form-group"><label>Last Name</label><input value={form.lastName} onChange={set('lastName')} placeholder="Doe" required /></div>
+              <div className="full form-group"><label>Address</label><input value={form.address} onChange={set('address')} placeholder="123 Main Street, Apt 4B" required /></div>
+              <div className="form-group"><label>City</label><input value={form.city} onChange={set('city')} placeholder="Mumbai" required /></div>
+              <div className="form-group"><label>State</label><input value={form.state} onChange={set('state')} placeholder="Maharashtra" required /></div>
+              <div className="form-group"><label>PIN Code</label><input value={form.pin} onChange={set('pin')} placeholder="400001" required /></div>
+              <div className="form-group"><label>Country</label><input value="India" readOnly /></div>
+            </div>
+          </div>
+
+          <div className="checkout-section">
+            <h3>Payment Method</h3>
+            <div className="payment-options">
+              {PAYMENT_OPTIONS.map((opt) => (
+                <label
+                  key={opt.value}
+                  className={`payment-option${paymentOption === opt.value ? ' active' : ''}`}
+                  onClick={() => setPaymentOption(opt.value)}
+                >
+                  <input type="radio" name="payment" value={opt.value} checked={paymentOption === opt.value} onChange={() => setPaymentOption(opt.value)} />
+                  <span className="label">{opt.label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="cart-summary">
+          <h3>Order Summary</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
+            {items.map((item) => (
+              <div key={`${item.productId}-${item.variantId}`} style={{ display: 'flex', gap: 12 }}>
+                <div style={{ width: 50, height: 50, borderRadius: 8, flexShrink: 0, background: item.image ? `url(${item.image}) center/cover` : 'linear-gradient(145deg, #e8f5e9, #c8e6c9)' }} />
+                <div style={{ flex: 1, fontSize: 13 }}>
+                  <div style={{ fontWeight: 600 }}>{item.name} × {item.quantity}</div>
+                  <div style={{ color: 'var(--text-light)' }}>₹{item.price * item.quantity}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="coupon-input">
+            <input placeholder="Coupon code" value={couponCode} onChange={(e) => setCouponCode(e.target.value.toUpperCase())} />
+            <button type="button" onClick={applyCoupon}>Apply</button>
+          </div>
+          {couponMessage && <p style={{ fontSize: 13, color: 'var(--text-light)', marginBottom: 8 }}>{couponMessage}</p>}
+
+          <div className="summary-row"><span>Subtotal</span><span>₹{subtotal}</span></div>
+          {discount > 0 && <div className="summary-row"><span>Discount</span><span style={{ color: 'var(--green-600)', fontWeight: 600 }}>-₹{discount}</span></div>}
+          <div className="summary-row"><span>Shipping</span><span className={shipping === 0 ? 'free' : ''}>{shipping === 0 ? 'FREE' : `₹${shipping}`}</span></div>
+          <div className="summary-row total"><span>Total</span><span>₹{total}</span></div>
+
+          {error && <p style={{ color: '#e74c3c', fontSize: 14, marginTop: 12 }}>{error}</p>}
+
+          <button type="submit" className="btn-primary" style={{ width: '100%', justifyContent: 'center', marginTop: 20 }} disabled={placing}>
+            {placing ? 'Processing…' : 'Place Order'}
+          </button>
+          <div style={{ textAlign: 'center', marginTop: 12, fontSize: 13, color: 'var(--text-light)' }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green-500)" strokeWidth="2" style={{ verticalAlign: 'middle', marginRight: 4 }}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+            Trusted by Thousands of Customers
+          </div>
+        </div>
+      </form>
+    </>
   );
 }
