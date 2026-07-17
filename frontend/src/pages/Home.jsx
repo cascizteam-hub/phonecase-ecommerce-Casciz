@@ -15,6 +15,7 @@ const CATEGORY_GRADIENTS = [
 export default function Home() {
   const [categories, setCategories] = useState([]);
   const [featured, setFeatured] = useState([]);
+  const [heroProduct, setHeroProduct] = useState(null);
 
   useEffect(() => {
     getCategoriesApi().then((data) => setCategories(data.categories));
@@ -25,14 +26,19 @@ export default function Home() {
         getProductsApi({ limit: 8 }).then((fallback) => setFeatured(fallback.products));
       }
     });
+
+    // Hero card: the first *featured* product that actually has a photo,
+    // else the first product overall that has one, else none (SVG fallback).
+    getProductsApi({ limit: 20 }).then((data) => {
+      const withImage = (p) => p.images?.[0]?.url;
+      const pick =
+        data.products.filter((p) => p.isFeatured).find(withImage) || data.products.find(withImage);
+      if (pick) setHeroProduct(pick);
+    });
   }, []);
 
   useScrollReveal([categories, featured]);
 
-  // Featured product's first image if one exists, else the first available
-  // product's first image (featured already falls back to "all products"
-  // above when there are no featured ones).
-  const heroProduct = featured[0];
   const heroProductImage = heroProduct?.images?.[0]?.url;
 
   return (
