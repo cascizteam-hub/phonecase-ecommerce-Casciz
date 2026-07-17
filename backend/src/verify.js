@@ -85,7 +85,7 @@ const run = async () => {
     .send({
       name: 'Clear Shockproof Case',
       description: 'A durable clear case',
-      brand: 'CaseCraft',
+      brand: 'Casciz',
       category: categoryId,
       price: 599,
       discountPrice: 499,

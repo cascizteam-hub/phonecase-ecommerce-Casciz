@@ -26,7 +26,7 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="w-full max-w-sm bg-white border border-gray-200 rounded-xl p-8">
-        <h1 className="text-xl font-bold text-gray-900 mb-1">CaseCraft Admin</h1>
+        <h1 className="text-xl font-bold text-gray-900 mb-1">Casciz Admin</h1>
         <p className="text-sm text-gray-500 mb-6">Sign in to manage your store.</p>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input

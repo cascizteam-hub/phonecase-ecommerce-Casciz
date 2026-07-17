@@ -20,7 +20,7 @@ export default function AdminLayout() {
     <div className="min-h-screen flex bg-gray-50">
       <aside className="w-56 shrink-0 bg-gray-900 text-gray-200 flex flex-col">
         <div className="px-5 py-5 text-white font-bold text-lg border-b border-gray-800">
-          CaseCraft Admin
+          Casciz Admin
         </div>
         <nav className="flex-1 px-2 py-4 flex flex-col gap-1">
           {navItems.map((item) => (

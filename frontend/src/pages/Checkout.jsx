@@ -118,7 +118,7 @@ export default function Checkout() {
         amount,
         currency,
         order_id: razorpayOrderId,
-        name: 'CaseCraft',
+        name: 'Casciz',
         description: `Order ${order._id}`,
         prefill: { name: `${form.firstName} ${form.lastName}`, email: form.email, contact: form.phone },
         handler: async (response) => {

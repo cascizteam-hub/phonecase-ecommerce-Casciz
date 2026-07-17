@@ -61,7 +61,7 @@ export default function Home() {
                 <div className="case-preview">
                   <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--green-500)" strokeWidth="1.5"><rect x="5" y="2" width="14" height="20" rx="3" /><path d="M12 18h.01" /></svg>
                 </div>
-                <span>CaseCraft</span>
+                <span>Casciz</span>
               </div>
             </div>
             <div className="hero-floating-card card1">

@@ -1,4 +1,4 @@
-# CaseCraft — Phone Case E-commerce Platform
+# Casciz — Phone Case E-commerce Platform
 
 A full-stack phone case store: a customer storefront, an admin dashboard, and
 a Node.js/Express/MongoDB REST API, with JWT role-based auth, Cloudinary

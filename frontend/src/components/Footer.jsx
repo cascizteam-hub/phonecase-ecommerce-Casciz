@@ -5,7 +5,7 @@ export default function Footer() {
     <footer className="footer">
       <div className="footer-grid">
         <div className="footer-brand">
-          <Link to="/" className="logo">Case<span>Craft</span></Link>
+          <Link to="/" className="logo">Cas<span>ciz</span></Link>
           <p>Premium phone cases designed for protection, personality, and style. Handcrafted with love in India.</p>
           <div className="social-links">
             <a href="#" aria-label="Instagram">
@@ -49,7 +49,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="footer-bottom">
-        <p>&copy; {new Date().getFullYear()} CaseCraft. All rights reserved. Made with love in India.</p>
+        <p>&copy; {new Date().getFullYear()} Casciz. All rights reserved. Made with love in India.</p>
       </div>
     </footer>
   );

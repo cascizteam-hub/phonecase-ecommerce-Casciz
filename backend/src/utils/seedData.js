@@ -12,7 +12,7 @@ const PRODUCT_DEFS = [
     name: 'Clear Shockproof Case',
     slug: 'clear-shockproof-case',
     description: 'A durable, crystal-clear shockproof case with reinforced corners.',
-    brand: 'CaseCraft',
+    brand: 'Casciz',
     categorySlug: 'iphone-cases',
     price: 599,
     discountPrice: 499,
@@ -28,7 +28,7 @@ const PRODUCT_DEFS = [
     name: 'Matte Silicone Case',
     slug: 'matte-silicone-case',
     description: 'Soft-touch matte silicone case with a microfiber lining.',
-    brand: 'CaseCraft',
+    brand: 'Casciz',
     categorySlug: 'iphone-cases',
     price: 799,
     variants: [
