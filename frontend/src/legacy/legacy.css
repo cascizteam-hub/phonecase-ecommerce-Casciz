@@ -613,6 +613,64 @@ button { cursor: pointer; border: none; font-family: inherit; }
 }
 .color-dot:hover { border-color: var(--green-400); transform: scale(1.2); }
 
+/* === INSTAGRAM FEED === */
+.instagram-section {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 80px 40px;
+  text-align: center;
+}
+.instagram-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.instagram-post {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  display: block;
+  transition: var(--transition);
+}
+.instagram-post:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.instagram-post-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  background: linear-gradient(135deg, rgba(26,46,35,0) 0%, rgba(26,46,35,0.35) 100%);
+  opacity: 0;
+  transition: var(--transition);
+}
+.instagram-post:hover .instagram-post-overlay { opacity: 1; }
+.instagram-widget-wrap {
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--green-100);
+  margin-bottom: 32px;
+  background: var(--white);
+}
+.instagram-widget-frame {
+  width: 100%;
+  height: 520px;
+  border: 0;
+  display: block;
+}
+.instagram-follow-btn { display: inline-flex; }
+
+@media (max-width: 1024px) {
+  .instagram-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 640px) {
+  .instagram-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .instagram-section { padding: 60px 20px; }
+  .instagram-widget-frame { height: 640px; }
+}
+
 /* === TESTIMONIALS === */
 .testimonials-section {
   background: var(--green-50);

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { getProductsApi } from '../api/products';
 import { getCategoriesApi } from '../api/categories';
 import ProductCard from '../components/ProductCard';
+import InstagramFeed from '../components/InstagramFeed';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 
 const CATEGORY_GRADIENTS = [
@@ -103,6 +104,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <InstagramFeed />
 
       <div className="trust-bar">
         <div className="trust-item">
