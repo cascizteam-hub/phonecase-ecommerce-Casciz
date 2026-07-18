@@ -266,7 +266,7 @@ export default function ProductDetails() {
             <label>Step 3: Select Phone Brand</label>
             <div className="phone-selector">
               <div className="selector-group">
-                <select value={selectedBrand} onChange={(e) => onBrandChange(e.target.value)}>
+                <select aria-label="Choose phone brand" value={selectedBrand} onChange={(e) => onBrandChange(e.target.value)}>
                   <option value="">-- Choose Brand --</option>
                   {Object.keys(PHONE_BRANDS).map((b) => (
                     <option key={b} value={b}>{b}</option>
@@ -363,7 +363,7 @@ export default function ProductDetails() {
             </div>
 
             <form onSubmit={handleReviewSubmit} className="form-group" style={{ maxWidth: 400 }}>
-              <select value={reviewForm.rating} onChange={(e) => setReviewForm({ ...reviewForm, rating: Number(e.target.value) })}>
+              <select aria-label="Rating" value={reviewForm.rating} onChange={(e) => setReviewForm({ ...reviewForm, rating: Number(e.target.value) })}>
                 {[5, 4, 3, 2, 1].map((r) => (
                   <option key={r} value={r}>{r} star{r > 1 ? 's' : ''}</option>
                 ))}

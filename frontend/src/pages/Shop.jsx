@@ -137,7 +137,7 @@ export default function Shop() {
         <div className="shop-main">
           <div className="shop-toolbar">
             <span className="results">{data ? `Showing ${data.total} product${data.total !== 1 ? 's' : ''}` : 'Loading…'}</span>
-            <select value={sort} onChange={(e) => setSort(e.target.value)}>
+            <select aria-label="Sort products" value={sort} onChange={(e) => setSort(e.target.value)}>
               <option value="featured">Sort: Featured</option>
               <option value="price-low">Price: Low to High</option>
               <option value="price-high">Price: High to Low</option>

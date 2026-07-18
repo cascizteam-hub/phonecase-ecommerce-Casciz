@@ -935,6 +935,15 @@ button { cursor: pointer; border: none; font-family: inherit; }
   margin: 0 auto;
   padding: 60px 40px;
 }
+.product-detail > .product-gallery,
+.product-detail > .product-detail-info {
+  /* Grid items default to min-width: auto, which stops them shrinking
+     below their content's intrinsic width (e.g. the 4-across pricing
+     cards) — that forces the whole grid, and the page, wider than the
+     viewport. min-width: 0 lets the column shrink and its own content
+     wrap/compress instead. */
+  min-width: 0;
+}
 .product-gallery {
   display: flex;
   gap: 16px;
@@ -1551,7 +1560,18 @@ button { cursor: pointer; border: none; font-family: inherit; }
   .form-grid { grid-template-columns: 1fr; }
   .form-grid .full { grid-column: auto; }
   .product-gallery { flex-direction: column-reverse; }
-  .product-thumbnails { flex-direction: row; }
+  .product-thumbnails {
+    flex-direction: row;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+}
+@media (max-width: 400px) {
+  .product-detail { padding: 40px 20px; }
+  .product-thumbnails .thumb { width: 64px; height: 64px; flex-shrink: 0; }
+  .search-bar-large { flex-wrap: wrap; }
+  .search-bar-large input { min-width: 0; flex-basis: 100%; }
+  .search-bar-large button { flex: 1; }
 }
 
 /* === PRODUCT DETAIL PAGE (page-specific) === */
