@@ -1,11 +1,12 @@
+import { useEffect, useState } from 'react';
 import { FaInstagram } from 'react-icons/fa';
+import { getInstagramFeedApi } from '../api/instagram';
 
 const INSTAGRAM_URL = 'https://www.instagram.com/casciz.store';
-const WIDGET_ID = import.meta.env.VITE_LIGHTWIDGET_ID;
 
-// Placeholder tiles shown until a LightWidget ID is configured, so the
-// section always looks intentional (matches the site's existing gradient
-// placeholder pattern for missing product photos) rather than broken.
+// Shown while loading, and as a graceful fallback if the Instagram Graph
+// API isn't configured yet or a request fails, so the section always
+// looks intentional rather than broken.
 const PLACEHOLDER_GRADIENTS = [
   'linear-gradient(145deg, #a8e6cf, #88d4ab)',
   'linear-gradient(145deg, #c5e8d5, #96c9ae)',
@@ -16,6 +17,24 @@ const PLACEHOLDER_GRADIENTS = [
 ];
 
 export default function InstagramFeed() {
+  const [posts, setPosts] = useState(null); // null = loading, [] = no posts available
+
+  useEffect(() => {
+    let cancelled = false;
+    getInstagramFeedApi()
+      .then((data) => {
+        if (!cancelled) setPosts(data.posts || []);
+      })
+      .catch(() => {
+        if (!cancelled) setPosts([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const showRealPosts = posts && posts.length > 0;
+
   return (
     <section className="instagram-section">
       <div className="section-header reveal">
@@ -24,16 +43,23 @@ export default function InstagramFeed() {
         <p>See how customers style their cases, drops, and behind-the-scenes moments.</p>
       </div>
 
-      {WIDGET_ID ? (
-        <div className="instagram-widget-wrap reveal">
-          <iframe
-            title="Instagram feed"
-            src={`https://lightwidget.com/widgets/${WIDGET_ID}.html`}
-            scrolling="no"
-            allowTransparency="true"
-            className="instagram-widget-frame"
-            loading="lazy"
-          />
+      {showRealPosts ? (
+        <div className="instagram-grid reveal">
+          {posts.map((post) => (
+            <a
+              key={post.id}
+              href={post.permalink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="instagram-post"
+              aria-label={post.caption ? post.caption.slice(0, 100) : 'View post on Instagram'}
+            >
+              <img src={post.imageUrl} alt={post.caption ? post.caption.slice(0, 140) : 'Instagram post'} loading="lazy" />
+              <span className="instagram-post-overlay">
+                <FaInstagram size={22} />
+              </span>
+            </a>
+          ))}
         </div>
       ) : (
         <div className="instagram-grid reveal">

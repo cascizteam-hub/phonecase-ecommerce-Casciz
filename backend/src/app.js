@@ -14,6 +14,7 @@ import couponRoutes from './routes/couponRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
+import instagramRoutes from './routes/instagramRoutes.js';
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.use('/api/coupons', couponRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/instagram', instagramRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
