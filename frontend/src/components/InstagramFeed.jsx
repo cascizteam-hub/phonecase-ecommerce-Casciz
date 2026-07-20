@@ -1,39 +1,41 @@
-import { useEffect, useState } from 'react';
-import { FaInstagram } from 'react-icons/fa';
+import { useCallback, useEffect, useState } from 'react';
+import { FaInstagram, FaPlay } from 'react-icons/fa';
 import { getInstagramFeedApi } from '../api/instagram';
 
 const INSTAGRAM_URL = 'https://www.instagram.com/casciz.store';
-
-// Shown while loading, and as a graceful fallback if the Instagram Graph
-// API isn't configured yet or a request fails, so the section always
-// looks intentional rather than broken.
-const PLACEHOLDER_GRADIENTS = [
-  'linear-gradient(145deg, #2a0a10, #181818)',
-  'linear-gradient(145deg, #330d15, #181818)',
-  'linear-gradient(145deg, #240810, #181818)',
-  'linear-gradient(145deg, #3d0e18, #181818)',
-  'linear-gradient(145deg, #2e0b12, #181818)',
-  'linear-gradient(145deg, #360c16, #181818)',
-];
+// Poll periodically so newly published posts (and a freshly-configured
+// feed) show up automatically, without requiring a page reload.
+const REFRESH_INTERVAL_MS = 5 * 60 * 1000;
 
 export default function InstagramFeed() {
-  const [posts, setPosts] = useState(null); // null = loading, [] = no posts available
+  const [status, setStatus] = useState('loading'); // 'loading' | 'error' | 'loaded'
+  const [posts, setPosts] = useState([]);
 
-  useEffect(() => {
-    let cancelled = false;
+  const fetchFeed = useCallback((background = false) => {
+    if (!background) setStatus('loading');
     getInstagramFeedApi()
       .then((data) => {
-        if (!cancelled) setPosts(data.posts || []);
+        const nextPosts = data.posts || [];
+        setPosts(nextPosts);
+        setStatus(nextPosts.length > 0 ? 'loaded' : 'error');
       })
-      .catch(() => {
-        if (!cancelled) setPosts([]);
-      });
-    return () => {
-      cancelled = true;
-    };
+      .catch(() => setStatus('error'));
   }, []);
 
-  const showRealPosts = posts && posts.length > 0;
+  useEffect(() => {
+    fetchFeed();
+
+    const interval = setInterval(() => fetchFeed(true), REFRESH_INTERVAL_MS);
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') fetchFeed(true);
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
+  }, [fetchFeed]);
 
   return (
     <section className="instagram-section">
@@ -43,7 +45,24 @@ export default function InstagramFeed() {
         <p>See how customers style their cases, drops, and behind-the-scenes moments.</p>
       </div>
 
-      {showRealPosts ? (
+      {status === 'loading' && (
+        <div className="instagram-grid reveal" aria-busy="true" aria-label="Loading Instagram posts">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="instagram-post instagram-post-skeleton" />
+          ))}
+        </div>
+      )}
+
+      {status === 'error' && (
+        <div className="instagram-error reveal">
+          <p>Couldn't load the latest posts right now.</p>
+          <button type="button" className="btn-secondary" onClick={() => fetchFeed()}>
+            Retry
+          </button>
+        </div>
+      )}
+
+      {status === 'loaded' && (
         <div className="instagram-grid reveal">
           {posts.map((post) => (
             <a
@@ -55,24 +74,11 @@ export default function InstagramFeed() {
               aria-label={post.caption ? post.caption.slice(0, 100) : 'View post on Instagram'}
             >
               <img src={post.imageUrl} alt={post.caption ? post.caption.slice(0, 140) : 'Instagram post'} loading="lazy" />
-              <span className="instagram-post-overlay">
-                <FaInstagram size={22} />
-              </span>
-            </a>
-          ))}
-        </div>
-      ) : (
-        <div className="instagram-grid reveal">
-          {PLACEHOLDER_GRADIENTS.map((gradient, i) => (
-            <a
-              key={i}
-              href={INSTAGRAM_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="instagram-post"
-              style={{ background: gradient }}
-              aria-label="View on Instagram"
-            >
+              {post.mediaType === 'VIDEO' && (
+                <span className="instagram-post-video-icon">
+                  <FaPlay size={14} />
+                </span>
+              )}
               <span className="instagram-post-overlay">
                 <FaInstagram size={22} />
               </span>
