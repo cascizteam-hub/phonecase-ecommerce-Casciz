@@ -212,7 +212,7 @@ export default function Checkout() {
                 <div style={{ width: 50, height: 50, borderRadius: 8, flexShrink: 0, background: item.image ? `url(${item.image}) center/cover` : 'linear-gradient(145deg, #e8f5e9, #c8e6c9)' }} />
                 <div style={{ flex: 1, fontSize: 13 }}>
                   <div style={{ fontWeight: 600 }}>{item.name} × {item.quantity}</div>
-                  <div style={{ color: 'var(--text-light)' }}>₹{item.price * item.quantity}</div>
+                  <div style={{ color: 'var(--text-secondary)' }}>₹{item.price * item.quantity}</div>
                 </div>
               </div>
             ))}
@@ -222,20 +222,20 @@ export default function Checkout() {
             <input placeholder="Coupon code" value={couponCode} onChange={(e) => setCouponCode(e.target.value.toUpperCase())} />
             <button type="button" onClick={applyCoupon}>Apply</button>
           </div>
-          {couponMessage && <p style={{ fontSize: 13, color: 'var(--text-light)', marginBottom: 8 }}>{couponMessage}</p>}
+          {couponMessage && <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 8 }}>{couponMessage}</p>}
 
           <div className="summary-row"><span>Subtotal</span><span>₹{subtotal}</span></div>
-          {discount > 0 && <div className="summary-row"><span>Discount</span><span style={{ color: 'var(--green-600)', fontWeight: 600 }}>-₹{discount}</span></div>}
+          {discount > 0 && <div className="summary-row"><span>Discount</span><span style={{ color: 'var(--red)', fontWeight: 600 }}>-₹{discount}</span></div>}
           <div className="summary-row"><span>Shipping</span><span className={shipping === 0 ? 'free' : ''}>{shipping === 0 ? 'FREE' : `₹${shipping}`}</span></div>
           <div className="summary-row total"><span>Total</span><span>₹{total}</span></div>
 
-          {error && <p style={{ color: '#e74c3c', fontSize: 14, marginTop: 12 }}>{error}</p>}
+          {error && <p style={{ color: 'var(--red-hover)', fontSize: 14, marginTop: 12 }}>{error}</p>}
 
           <button type="submit" className="btn-primary" style={{ width: '100%', justifyContent: 'center', marginTop: 20 }} disabled={placing}>
             {placing ? 'Processing…' : 'Place Order'}
           </button>
-          <div style={{ textAlign: 'center', marginTop: 12, fontSize: 13, color: 'var(--text-light)' }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green-500)" strokeWidth="2" style={{ verticalAlign: 'middle', marginRight: 4 }}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+          <div style={{ textAlign: 'center', marginTop: 12, fontSize: 13, color: 'var(--text-secondary)' }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--red)" strokeWidth="2" style={{ verticalAlign: 'middle', marginRight: 4 }}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
             Trusted by Thousands of Customers
           </div>
         </div>

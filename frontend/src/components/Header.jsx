@@ -53,8 +53,8 @@ export default function Header() {
                   position: 'absolute',
                   right: 0,
                   top: '110%',
-                  background: 'var(--white)',
-                  border: '1px solid var(--green-100)',
+                  background: 'var(--card-bg)',
+                  border: '1px solid var(--border-color)',
                   borderRadius: 'var(--radius-sm)',
                   boxShadow: 'var(--shadow-md)',
                   minWidth: 180,
@@ -63,11 +63,11 @@ export default function Header() {
                 }}
                 onMouseLeave={() => setAccountOpen(false)}
               >
-                <div style={{ padding: '8px 12px', fontSize: 13, color: 'var(--text-light)' }}>Hi, {user.name.split(' ')[0]}</div>
-                <Link to="/profile" onClick={() => setAccountOpen(false)} style={{ display: 'block', padding: '10px 12px', fontSize: 14, borderRadius: 8 }}>Profile</Link>
-                <Link to="/orders" onClick={() => setAccountOpen(false)} style={{ display: 'block', padding: '10px 12px', fontSize: 14, borderRadius: 8 }}>My Orders</Link>
-                <Link to="/wishlist" onClick={() => setAccountOpen(false)} style={{ display: 'block', padding: '10px 12px', fontSize: 14, borderRadius: 8 }}>Wishlist</Link>
-                <button onClick={handleLogout} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 12px', fontSize: 14, borderRadius: 8, background: 'none', color: '#e74c3c' }}>Logout</button>
+                <div style={{ padding: '8px 12px', fontSize: 13, color: 'var(--text-secondary)' }}>Hi, {user.name.split(' ')[0]}</div>
+                <Link to="/profile" onClick={() => setAccountOpen(false)} style={{ display: 'block', padding: '10px 12px', fontSize: 14, borderRadius: 8, color: 'var(--white)' }}>Profile</Link>
+                <Link to="/orders" onClick={() => setAccountOpen(false)} style={{ display: 'block', padding: '10px 12px', fontSize: 14, borderRadius: 8, color: 'var(--white)' }}>My Orders</Link>
+                <Link to="/wishlist" onClick={() => setAccountOpen(false)} style={{ display: 'block', padding: '10px 12px', fontSize: 14, borderRadius: 8, color: 'var(--white)' }}>Wishlist</Link>
+                <button onClick={handleLogout} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 12px', fontSize: 14, borderRadius: 8, background: 'none', color: 'var(--red-hover)' }}>Logout</button>
               </div>
             )}
           </div>

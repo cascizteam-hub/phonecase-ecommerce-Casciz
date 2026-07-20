@@ -4,11 +4,11 @@ import { getMyOrdersApi } from '../api/orders';
 import Loader from '../components/Loader';
 
 const statusStyle = {
-  pending: { background: '#fff3cd', color: '#856404' },
-  processing: { background: '#d6ebff', color: '#1a5c9e' },
-  shipped: { background: 'var(--green-100)', color: 'var(--green-700)' },
-  delivered: { background: 'var(--green-500)', color: 'var(--white)' },
-  cancelled: { background: '#fde8e8', color: '#e74c3c' },
+  pending: { background: 'var(--border-color)', color: 'var(--text-secondary)' },
+  processing: { background: 'rgba(217,4,41,0.15)', color: 'var(--red-hover)' },
+  shipped: { background: 'rgba(217,4,41,0.3)', color: 'var(--white)' },
+  delivered: { background: 'var(--red)', color: 'var(--white)' },
+  cancelled: { background: 'rgba(255,255,255,0.08)', color: 'var(--text-muted)' },
 };
 
 export default function MyOrders() {
@@ -29,7 +29,7 @@ export default function MyOrders() {
         <Loader />
       ) : orders.length === 0 ? (
         <div className="cart-empty">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--green-300)" strokeWidth="1"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 01-8 0" /></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="1"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 01-8 0" /></svg>
           <h3>You haven't placed any orders yet</h3>
           <p>When you do, they'll show up here.</p>
           <Link to="/shop" className="btn-primary">Start shopping</Link>

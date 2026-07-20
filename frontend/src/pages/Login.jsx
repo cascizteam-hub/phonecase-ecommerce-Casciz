@@ -80,7 +80,7 @@ export default function Login() {
                 <label><input type="checkbox" /> Remember me</label>
                 <a href="#">Forgot password?</a>
               </div>
-              {error && <p style={{ color: '#e74c3c', fontSize: 13 }}>{error}</p>}
+              {error && <p style={{ color: 'var(--red-hover)', fontSize: 13 }}>{error}</p>}
               <button type="submit" className="btn-primary" disabled={loading}>{loading ? 'Logging in…' : 'Login'}</button>
             </form>
           ) : (
@@ -104,7 +104,7 @@ export default function Login() {
               <div className="form-row">
                 <label><input type="checkbox" required /> I agree to the <a href="#">Terms &amp; Conditions</a></label>
               </div>
-              {error && <p style={{ color: '#e74c3c', fontSize: 13 }}>{error}</p>}
+              {error && <p style={{ color: 'var(--red-hover)', fontSize: 13 }}>{error}</p>}
               <button type="submit" className="btn-primary" disabled={loading}>{loading ? 'Creating account…' : 'Create Account'}</button>
             </form>
           )}

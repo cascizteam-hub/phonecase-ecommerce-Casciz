@@ -34,7 +34,7 @@ export default function Profile() {
           <form onSubmit={handleSubmit} className="auth-form">
             <div className="form-group">
               <label>Email</label>
-              <input disabled value={user.email} style={{ background: 'var(--green-50)', color: 'var(--text-light)' }} />
+              <input disabled value={user.email} style={{ background: 'var(--border-color)', color: 'var(--text-secondary)' }} />
             </div>
             <div className="form-group">
               <label>Name</label>
@@ -44,7 +44,7 @@ export default function Profile() {
               <label>Phone</label>
               <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="+91 98765 43210" />
             </div>
-            {message && <p style={{ fontSize: 13, color: 'var(--green-600)' }}>{message}</p>}
+            {message && <p style={{ fontSize: 13, color: 'var(--red-hover)' }}>{message}</p>}
             <button type="submit" className="btn-primary" disabled={saving}>{saving ? 'Saving…' : 'Save Changes'}</button>
           </form>
         </div>

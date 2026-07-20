@@ -148,7 +148,7 @@ export default function Shop() {
           {loading || !data ? (
             <Loader />
           ) : data.products.length === 0 ? (
-            <p style={{ textAlign: 'center', gridColumn: '1/-1', padding: 60, color: 'var(--text-light)' }}>
+            <p style={{ textAlign: 'center', gridColumn: '1/-1', padding: 60, color: 'var(--text-secondary)' }}>
               No products found matching your filters.
             </p>
           ) : (

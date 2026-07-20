@@ -43,17 +43,17 @@ export default function OrderDetails() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {order.items.map((item, i) => (
               <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }}>
-                <span style={{ color: 'var(--text-mid)' }}>
+                <span style={{ color: 'var(--text-secondary)' }}>
                   {item.name} {item.model && `(${item.model}${item.color ? ` · ${item.color}` : ''})`} × {item.quantity}
                 </span>
                 <span>₹{item.price * item.quantity}</span>
               </div>
             ))}
           </div>
-          <div style={{ borderTop: '1px solid var(--green-100)', marginTop: 16, paddingTop: 16 }}>
+          <div style={{ borderTop: '1px solid var(--border-color)', marginTop: 16, paddingTop: 16 }}>
             <div className="summary-row"><span>Items</span><span>₹{order.itemsPrice}</span></div>
             {order.discountAmount > 0 && (
-              <div className="summary-row"><span>Discount</span><span style={{ color: 'var(--green-600)' }}>-₹{order.discountAmount}</span></div>
+              <div className="summary-row"><span>Discount</span><span style={{ color: 'var(--red)' }}>-₹{order.discountAmount}</span></div>
             )}
             <div className="summary-row"><span>Shipping</span><span>{order.shippingPrice === 0 ? 'Free' : `₹${order.shippingPrice}`}</span></div>
             <div className="summary-row total"><span>Total</span><span>₹{order.totalPrice}</span></div>
@@ -62,7 +62,7 @@ export default function OrderDetails() {
 
         <div className="checkout-section">
           <h3>Shipping Address</h3>
-          <p style={{ fontSize: 14, color: 'var(--text-mid)', lineHeight: 1.7 }}>
+          <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
             {order.shippingAddress.fullName} · {order.shippingAddress.phone}
             <br />
             {order.shippingAddress.line1}
@@ -76,7 +76,7 @@ export default function OrderDetails() {
           <button
             onClick={handleCancel}
             disabled={cancelling}
-            style={{ background: 'none', color: '#e74c3c', fontSize: 14, fontWeight: 600, textDecoration: 'underline' }}
+            style={{ background: 'none', color: 'var(--red-hover)', fontSize: 14, fontWeight: 600, textDecoration: 'underline' }}
           >
             {cancelling ? 'Cancelling…' : 'Cancel Order'}
           </button>

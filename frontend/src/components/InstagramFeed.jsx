@@ -8,12 +8,12 @@ const INSTAGRAM_URL = 'https://www.instagram.com/casciz.store';
 // API isn't configured yet or a request fails, so the section always
 // looks intentional rather than broken.
 const PLACEHOLDER_GRADIENTS = [
-  'linear-gradient(145deg, #a8e6cf, #88d4ab)',
-  'linear-gradient(145deg, #c5e8d5, #96c9ae)',
-  'linear-gradient(145deg, #b8d8be, #7fb890)',
-  'linear-gradient(145deg, #d4f0e0, #a3d9bf)',
-  'linear-gradient(145deg, #dcedc1, #a5c97d)',
-  'linear-gradient(145deg, #c8e6c9, #81c784)',
+  'linear-gradient(145deg, #2a0a10, #181818)',
+  'linear-gradient(145deg, #330d15, #181818)',
+  'linear-gradient(145deg, #240810, #181818)',
+  'linear-gradient(145deg, #3d0e18, #181818)',
+  'linear-gradient(145deg, #2e0b12, #181818)',
+  'linear-gradient(145deg, #360c16, #181818)',
 ];
 
 export default function InstagramFeed() {

@@ -22,7 +22,7 @@ function BundleCard({ caseType, qty, featured }) {
   const price = getBundlePrice(caseType, qty);
   const regularPrice = getRegularPrice(caseType, qty);
   const savings = getSavings(caseType, qty);
-  const gradient = caseType === 'Metal Case' ? '#a8e6cf, #88d4ab' : '#c5e8d5, #96c9ae';
+  const gradient = caseType === 'Metal Case' ? '#241012, #181818' : '#2e1013, #181818';
 
   return (
     <Link to="/shop" className={`bundle-card${featured ? ' featured' : ''}`}>

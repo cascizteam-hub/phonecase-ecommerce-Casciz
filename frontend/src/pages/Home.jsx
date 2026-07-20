@@ -7,16 +7,15 @@ import InstagramFeed from '../components/InstagramFeed';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 
 const CATEGORY_GRADIENTS = [
-  'linear-gradient(135deg, #a8e6cf, #88d4ab)',
-  'linear-gradient(135deg, #b8d8be, #7fb890)',
-  'linear-gradient(135deg, #c5e8d5, #96c9ae)',
-  'linear-gradient(135deg, #d4f0e0, #a3d9bf)',
+  'linear-gradient(135deg, #2a0a10, #181818)',
+  'linear-gradient(135deg, #3d0d16, #181818)',
+  'linear-gradient(135deg, #24080d, #181818)',
+  'linear-gradient(135deg, #330c13, #181818)',
 ];
 
 export default function Home() {
   const [categories, setCategories] = useState([]);
   const [featured, setFeatured] = useState([]);
-  const [heroProduct, setHeroProduct] = useState(null);
 
   useEffect(() => {
     getCategoriesApi().then((data) => setCategories(data.categories));
@@ -27,20 +26,9 @@ export default function Home() {
         getProductsApi({ limit: 8 }).then((fallback) => setFeatured(fallback.products));
       }
     });
-
-    // Hero card: the first *featured* product that actually has a photo,
-    // else the first product overall that has one, else none (SVG fallback).
-    getProductsApi({ limit: 20 }).then((data) => {
-      const withImage = (p) => p.images?.[0]?.url;
-      const pick =
-        data.products.filter((p) => p.isFeatured).find(withImage) || data.products.find(withImage);
-      if (pick) setHeroProduct(pick);
-    });
   }, []);
 
   useScrollReveal([categories, featured]);
-
-  const heroProductImage = heroProduct?.images?.[0]?.url;
 
   return (
     <>
@@ -74,34 +62,6 @@ export default function Home() {
               <Link to="/shop" className="btn-secondary">Explore Collections</Link>
             </div>
           </div>
-          <div className="hero-visual">
-            <div className="hero-phone">
-              <div className="hero-phone-inner">
-                <div className="case-preview">
-                  {heroProductImage ? (
-                    <img
-                      src={heroProductImage}
-                      alt={heroProduct.name}
-                      loading="eager"
-                      decoding="async"
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'inherit' }}
-                    />
-                  ) : (
-                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--green-500)" strokeWidth="1.5"><rect x="5" y="2" width="14" height="20" rx="3" /><path d="M12 18h.01" /></svg>
-                  )}
-                </div>
-                <span>Casciz</span>
-              </div>
-            </div>
-            <div className="hero-floating-card card1">
-              <div className="label">Happy Customers</div>
-              <div className="value">10,000+</div>
-            </div>
-            <div className="hero-floating-card card2">
-              <div className="label">Case Designs</div>
-              <div className="value">500+</div>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -110,19 +70,19 @@ export default function Home() {
       <div className="trust-bar">
         <div className="trust-item">
           <div className="trust-icon"><svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="M12 5l7 7-7 7" /></svg></div>
-          <div><strong>Free Delivery</strong><br /><span style={{ fontSize: 12, color: 'var(--text-light)' }}>Pan-India shipping</span></div>
+          <div><strong>Free Delivery</strong><br /><span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Pan-India shipping</span></div>
         </div>
         <div className="trust-item">
           <div className="trust-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg></div>
-          <div><strong>Premium Quality</strong><br /><span style={{ fontSize: 12, color: 'var(--text-light)' }}>Military-grade protection</span></div>
+          <div><strong>Premium Quality</strong><br /><span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Military-grade protection</span></div>
         </div>
         <div className="trust-item">
           <div className="trust-icon"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /><path d="M9 12l2 2 4-4" /></svg></div>
-          <div><strong>30-Day Returns</strong><br /><span style={{ fontSize: 12, color: 'var(--text-light)' }}>Hassle-free exchanges</span></div>
+          <div><strong>30-Day Returns</strong><br /><span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Hassle-free exchanges</span></div>
         </div>
         <div className="trust-item">
           <div className="trust-icon"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" /><path d="M1 10h22" /></svg></div>
-          <div><strong>Secure Payments</strong><br /><span style={{ fontSize: 12, color: 'var(--text-light)' }}>100% safe checkout</span></div>
+          <div><strong>Secure Payments</strong><br /><span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>100% safe checkout</span></div>
         </div>
       </div>
 
@@ -157,29 +117,29 @@ export default function Home() {
         </div>
       </div>
 
-      <section className="section" style={{ background: 'linear-gradient(135deg, var(--green-50), var(--white))', maxWidth: '100%', padding: '60px 40px' }}>
+      <section className="section" style={{ background: 'linear-gradient(135deg, rgba(217,4,41,0.1), var(--black) 60%)', maxWidth: '100%', padding: '60px 40px' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', textAlign: 'center' }}>
           <div className="reveal">
             <span className="section-label">Save More</span>
-            <h2 style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', color: 'var(--text-dark)', marginBottom: 12 }}>Bundle Deals — Buy More, Save More</h2>
-            <p style={{ fontSize: 16, color: 'var(--text-light)', maxWidth: 520, margin: '0 auto 32px' }}>Mix different phone models in one order. Automatic bundle discounts applied.</p>
+            <h2 style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', color: 'var(--white)', marginBottom: 12 }}>Bundle Deals — Buy More, Save More</h2>
+            <p style={{ fontSize: 16, color: 'var(--text-secondary)', maxWidth: 520, margin: '0 auto 32px' }}>Mix different phone models in one order. Automatic bundle discounts applied.</p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 20, marginBottom: 32 }} className="reveal">
-            <Link to="/bundles" style={{ background: 'var(--white)', padding: 24, borderRadius: 'var(--radius)', border: '2px solid var(--green-100)', transition: 'var(--transition)', cursor: 'pointer', display: 'block' }}>
-              <div style={{ fontSize: 32, fontWeight: 800, color: 'var(--green-600)' }}>2 Cases</div>
-              <div style={{ fontSize: 14, color: 'var(--text-light)', margin: '8px 0' }}>Best Starter Pack</div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-dark)' }}>Save up to ₹129</div>
+            <Link to="/bundles" style={{ background: 'var(--card-bg)', padding: 24, borderRadius: 'var(--radius)', border: '2px solid var(--border-color)', transition: 'var(--transition)', cursor: 'pointer', display: 'block' }}>
+              <div style={{ fontSize: 32, fontWeight: 800, color: 'var(--red)' }}>2 Cases</div>
+              <div style={{ fontSize: 14, color: 'var(--text-secondary)', margin: '8px 0' }}>Best Starter Pack</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--white)' }}>Save up to ₹129</div>
             </Link>
-            <Link to="/bundles" style={{ background: 'var(--white)', padding: 24, borderRadius: 'var(--radius)', border: '2px solid var(--green-500)', boxShadow: 'var(--shadow-md)', cursor: 'pointer', position: 'relative', display: 'block' }}>
-              <div style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: 'var(--green-500)', color: 'var(--white)', padding: '4px 12px', borderRadius: 100, fontSize: 11, fontWeight: 700 }}>MOST POPULAR</div>
-              <div style={{ fontSize: 32, fontWeight: 800, color: 'var(--green-600)' }}>3 Cases</div>
-              <div style={{ fontSize: 14, color: 'var(--text-light)', margin: '8px 0' }}>Best Value</div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-dark)' }}>Save up to ₹248</div>
+            <Link to="/bundles" style={{ background: 'var(--card-bg)', padding: 24, borderRadius: 'var(--radius)', border: '2px solid var(--red)', boxShadow: 'var(--shadow-md)', cursor: 'pointer', position: 'relative', display: 'block' }}>
+              <div style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: 'var(--red)', color: 'var(--white)', padding: '4px 12px', borderRadius: 100, fontSize: 11, fontWeight: 700 }}>MOST POPULAR</div>
+              <div style={{ fontSize: 32, fontWeight: 800, color: 'var(--red)' }}>3 Cases</div>
+              <div style={{ fontSize: 14, color: 'var(--text-secondary)', margin: '8px 0' }}>Best Value</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--white)' }}>Save up to ₹248</div>
             </Link>
-            <Link to="/bundles" style={{ background: 'var(--white)', padding: 24, borderRadius: 'var(--radius)', border: '2px solid var(--green-100)', cursor: 'pointer', display: 'block' }}>
-              <div style={{ fontSize: 32, fontWeight: 800, color: 'var(--green-600)' }}>4 Cases</div>
-              <div style={{ fontSize: 14, color: 'var(--text-light)', margin: '8px 0' }}>Maximum Savings</div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-dark)' }}>Save up to ₹397</div>
+            <Link to="/bundles" style={{ background: 'var(--card-bg)', padding: 24, borderRadius: 'var(--radius)', border: '2px solid var(--border-color)', cursor: 'pointer', display: 'block' }}>
+              <div style={{ fontSize: 32, fontWeight: 800, color: 'var(--red)' }}>4 Cases</div>
+              <div style={{ fontSize: 14, color: 'var(--text-secondary)', margin: '8px 0' }}>Maximum Savings</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--white)' }}>Save up to ₹397</div>
             </Link>
           </div>
           <Link to="/bundles" className="btn-primary reveal">
@@ -188,7 +148,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section" id="products" style={{ background: 'var(--white)', maxWidth: '100%', paddingLeft: 0, paddingRight: 0 }}>
+      <section className="section" id="products" style={{ background: 'var(--black)', maxWidth: '100%', paddingLeft: 0, paddingRight: 0 }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
           <div className="section-header reveal">
             <span className="section-label">Bestsellers</span>

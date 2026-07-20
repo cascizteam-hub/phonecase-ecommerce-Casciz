@@ -12,7 +12,7 @@ export default function StarRating({ rating = 0, count }) {
         </svg>
       ))}
       {typeof count === 'number' && (
-        <span style={{ fontSize: 13, color: 'var(--text-light)', marginLeft: 6 }}>({count})</span>
+        <span style={{ fontSize: 13, color: 'var(--text-secondary)', marginLeft: 6 }}>({count})</span>
       )}
     </div>
   );

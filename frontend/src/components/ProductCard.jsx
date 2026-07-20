@@ -3,12 +3,12 @@ import { useCart } from '../hooks/useCart';
 import { useToast } from '../hooks/useToast';
 
 const COLOR_NAME_MAP = {
-  black: '#1a2e23', white: '#ffffff', clear: '#e8f5e9', transparent: '#e8f5e9',
+  black: '#1a1a1a', white: '#ffffff', clear: '#eeeeee', transparent: '#eeeeee',
   green: '#4aad7e', blue: '#4a90d9', red: '#e74c3c', brown: '#795548',
   pink: '#e91e8c', purple: '#8e44ad', gold: '#d4af37', silver: '#bdc3c7',
 };
 
-const swatchFor = (color) => COLOR_NAME_MAP[color?.toLowerCase()] || 'var(--green-300)';
+const swatchFor = (color) => COLOR_NAME_MAP[color?.toLowerCase()] || '#666666';
 
 export default function ProductCard({ product }) {
   const navigate = useNavigate();
@@ -58,7 +58,7 @@ export default function ProductCard({ product }) {
             decoding="async"
           />
         ) : (
-          <div className="product-image-bg" style={{ background: 'linear-gradient(145deg, #e8f5e9, #c8e6c9)' }} />
+          <div className="product-image-bg" style={{ background: 'linear-gradient(145deg, #241012, #181818)' }} />
         )}
         <button className="product-quick-add" onClick={handleQuickAdd}>+ Quick Add</button>
       </div>

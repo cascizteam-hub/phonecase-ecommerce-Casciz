@@ -253,7 +253,7 @@ export default function ProductDetails() {
                   >
                     {card.badge && <div className="pricing-badge">{card.badge}</div>}
                     <div className="quantity">{card.qty}</div>
-                    <div style={{ fontSize: 13, color: 'var(--text-light)', marginBottom: 8 }}>Case{card.qty > 1 ? 's' : ''}</div>
+                    <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 8 }}>Case{card.qty > 1 ? 's' : ''}</div>
                     <div className="price">₹{price}</div>
                     {cardSavings > 0 ? <div className="savings">Save ₹{cardSavings}</div> : <div style={{ height: 28 }} />}
                   </div>
@@ -277,7 +277,7 @@ export default function ProductDetails() {
               {selectedBrand && (
                 <div className="selector-group" id="modelGroup">
                   <label>
-                    Select Phone Model(s) <span style={{ fontWeight: 400, color: 'var(--text-light)' }}>(Min 1, Max 4 — Each model = 1 case)</span>
+                    Select Phone Model(s) <span style={{ fontWeight: 400, color: 'var(--text-secondary)' }}>(Min 1, Max 4 — Each model = 1 case)</span>
                   </label>
                   <div className="model-checkboxes">
                     {PHONE_BRANDS[selectedBrand].map((m) => (
@@ -313,7 +313,7 @@ export default function ProductDetails() {
               <div className="order-summary-row"><span>Selected Models:</span><strong>{selectedModels.length}</strong></div>
               <div className="order-summary-row">
                 <span>Original Price:</span>
-                <span style={{ textDecoration: 'line-through', color: 'var(--text-light)' }}>₹{regularPrice}</span>
+                <span style={{ textDecoration: 'line-through', color: 'var(--text-secondary)' }}>₹{regularPrice}</span>
               </div>
               <div className="order-summary-row"><span>Bundle Price:</span><strong>₹{bundlePrice}</strong></div>
               <div className="order-summary-row"><span>You Save:</span><span className="savings-highlight">₹{savings}</span></div>
@@ -332,9 +332,9 @@ export default function ProductDetails() {
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 01-8 0" /></svg>
               Add to Cart
             </button>
-            <button className="btn-primary" style={{ background: 'var(--green-700)' }} onClick={handleBuyNow}>Buy Now</button>
+            <button className="btn-primary" style={{ background: '#a50320' }} onClick={handleBuyNow}>Buy Now</button>
             <button className="btn-wishlist" onClick={handleWishlist}>
-              <svg viewBox="0 0 24 24" style={{ fill: isWishlisted(product._id) ? 'var(--green-500)' : 'none' }}>
+              <svg viewBox="0 0 24 24" style={{ fill: isWishlisted(product._id) ? 'var(--red)' : 'none' }}>
                 <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
               </svg>
             </button>
@@ -350,14 +350,14 @@ export default function ProductDetails() {
           <div style={{ marginTop: 40 }}>
             <h3 style={{ fontSize: 18, marginBottom: 16 }}>Reviews ({product.numReviews})</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 24 }}>
-              {product.reviews.length === 0 && <p style={{ color: 'var(--text-light)', fontSize: 14 }}>No reviews yet.</p>}
+              {product.reviews.length === 0 && <p style={{ color: 'var(--text-secondary)', fontSize: 14 }}>No reviews yet.</p>}
               {product.reviews.map((r) => (
-                <div key={r._id} style={{ borderBottom: '1px solid var(--green-100)', paddingBottom: 12 }}>
+                <div key={r._id} style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: 12 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <span style={{ fontWeight: 600, fontSize: 14 }}>{r.user?.name || 'Anonymous'}</span>
                     <StarRating rating={r.rating} />
                   </div>
-                  {r.comment && <p style={{ fontSize: 14, color: 'var(--text-mid)', marginTop: 4 }}>{r.comment}</p>}
+                  {r.comment && <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 4 }}>{r.comment}</p>}
                 </div>
               ))}
             </div>
@@ -373,9 +373,9 @@ export default function ProductDetails() {
                 onChange={(e) => setReviewForm({ ...reviewForm, comment: e.target.value })}
                 placeholder="Share your thoughts…"
                 rows={3}
-                style={{ padding: 12, border: '2px solid var(--green-200)', borderRadius: 'var(--radius-sm)', fontFamily: 'inherit', outline: 'none' }}
+                style={{ padding: 12, border: '2px solid var(--border-color)', borderRadius: 'var(--radius-sm)', fontFamily: 'inherit', outline: 'none' }}
               />
-              {reviewError && <p style={{ color: '#e74c3c', fontSize: 13 }}>{reviewError}</p>}
+              {reviewError && <p style={{ color: 'var(--red-hover)', fontSize: 13 }}>{reviewError}</p>}
               <button type="submit" className="btn-primary" style={{ alignSelf: 'flex-start' }}>Submit Review</button>
             </form>
           </div>
